@@ -39,10 +39,9 @@ echo 6. Print Project Link and QR Code
 echo 7. Erase Data
 echo 8. Refresh QR Code
 echo 9. Rewrite QR Code Link
-echo 10. Print Files
-echo 11. Exit
+echo 10. Exit
 echo ========================================
-set /p option=Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11): 
+set /p option=Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10): 
 
 if "%option%"=="1" goto convert
 if "%option%"=="2" goto view_workers
@@ -53,8 +52,7 @@ if "%option%"=="6" goto print_link_qr
 if "%option%"=="7" goto erase_data
 if "%option%"=="8" goto refresh_qr_code
 if "%option%"=="9" goto rewrite_qr_code_link
-if "%option%"=="10" goto print_files
-if "%option%"=="11" goto exit
+if "%option%"=="10" goto exit
 
 :convert
 cls
@@ -264,41 +262,6 @@ echo 1. Continue
 echo 2. Return to Main Menu
 set /p choice=Choose an option: 
 if "%choice%"=="1" goto print_link_qr
-if "%choice%"=="2" goto menu
-
-:print_files
-cls
-echo Print Files
-echo ------------
-echo Printing workers.txt...
-if exist "%workersFile%" (
-    print "%workersFile%"
-    echo workers.txt sent to printer.
-) else (
-    echo No workers.txt file found.
-)
-
-echo Printing App_Source.txt...
-if exist "%appSourceFile%" (
-    print "%appSourceFile%"
-    echo App Source file sent to printer.
-) else (
-    echo No App Source file found.
-)
-
-echo Printing QR Code...
-if exist "%qrCodeImage%" (
-    print "%qrCodeImage%"
-    echo QR Code image sent to printer.
-) else (
-    echo No QR Code image found.
-)
-
-echo.
-echo 1. Continue
-echo 2. Return to Main Menu
-set /p choice=Choose an option: 
-if "%choice%"=="1" goto print_files
 if "%choice%"=="2" goto menu
 
 :exit
