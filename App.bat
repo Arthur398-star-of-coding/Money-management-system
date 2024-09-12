@@ -1,7 +1,7 @@
 @echo off
 title Employee Salary Management
-color BE
-:: "B" sets background color to Light Aqua, "E" sets text color to Light Yellow
+color 0E
+:: "0" sets background color to Black, "E" sets text color to Light Yellow
 
 :: Define file paths
 set "workersFile=%~dp0workers.txt"
