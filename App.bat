@@ -84,7 +84,8 @@ if "%choice%"=="2" goto menu
 cls
 echo Add Worker
 echo -----------
-set /p name=Enter the worker's name: 
+set /p name=Enter the worker's name (or type '2' to return to the main menu): 
+if "%name%"=="2" goto menu
 set /p salary=Enter salary in Euros: 
 echo %name%'s salary is %salary% Euros >> "%workersFile%"
 echo Worker added successfully and saved to workers.txt.
@@ -99,7 +100,8 @@ if "%choice%"=="2" goto menu
 cls
 echo Modify Worker Salary
 echo ----------------------
-set /p worker_name=Enter the name of the worker to modify: 
+set /p worker_name=Enter the name of the worker to modify (or type '2' to return to the main menu): 
+if "%worker_name%"=="2" goto menu
 if not exist "%workersFile%" (
     echo No workers found.
     pause
@@ -118,7 +120,8 @@ if "%found%"=="0" (
     goto menu
 )
 
-set /p new_salary=Enter new salary in Euros for %worker_name%: 
+set /p new_salary=Enter new salary in Euros for %worker_name% (or type '2' to return to the main menu): 
+if "%new_salary%"=="2" goto menu
 (for /f "tokens=1,* delims=:" %%i in ('findstr /n "^" "%workersFile%"') do (
     if %%i equ %line_num% (
         echo %worker_name%'s salary is %new_salary% Euros
@@ -139,7 +142,8 @@ if "%choice%"=="2" goto menu
 cls
 echo Delete Worker
 echo -------------
-set /p worker_name=Enter the name of the worker to delete: 
+set /p worker_name=Enter the name of the worker to delete (or type '2' to return to the main menu): 
+if "%worker_name%"=="2" goto menu
 if not exist "%workersFile%" (
     echo No workers found.
     pause
@@ -237,7 +241,8 @@ if "%choice%"=="2" goto menu
 cls
 echo Rewrite QR Code Link
 echo ---------------------
-set /p new_link=Enter the new link for QR Code: 
+set /p new_link=Enter the new link for QR Code (or type '2' to return to the main menu): 
+if "%new_link%"=="2" goto menu
 set "qrCodeLink=%new_link%"
 :: Save new link and regenerate QR Code
 echo ======================================== > "%appSourceFile%"
