@@ -6,19 +6,24 @@ color 0E
 :: Define file paths
 set "workersFile=%~dp0workers.txt"
 set "appSourceFile=%~dp0App_Source.txt"
-set "logFile=%~dp0error.log"
+set "qrCodeImage=%~dp0qr_code.png"
 set "qrCodeLink=https://github.com/Arthur398-star-of-coding/Money-management-system"
 
-:: Check if workers.txt exists, if not, create it
+:: Check and recreate necessary files
 if not exist "%workersFile%" (
-    echo Worker data will be saved to workers.txt
-) >nul
+    echo No workers.txt found. Creating a new file...
+    echo. > "%workersFile%"
+)
 
-:: Check if App Source file exists, if not, create it
 if not exist "%appSourceFile%" (
-    echo App Source file created.
-    echo Code and link will be saved here. > "%appSourceFile%"
-) >nul
+    echo No App Source file found. Creating a new file...
+    echo App Source file created. > "%appSourceFile%"
+    echo Code and link will be saved here. >> "%appSourceFile%"
+)
+
+if not exist "%qrCodeImage%" (
+    echo No QR code image found. It will be generated as needed.
+)
 
 :menu
 cls
@@ -34,9 +39,10 @@ echo 6. Print Project Link and QR Code
 echo 7. Erase Data
 echo 8. Refresh QR Code
 echo 9. Rewrite QR Code Link
-echo 10. Exit
+echo 10. Print Files
+echo 11. Exit
 echo ========================================
-set /p option=Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10): 
+set /p option=Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11): 
 
 if "%option%"=="1" goto convert
 if "%option%"=="2" goto view_workers
@@ -47,13 +53,15 @@ if "%option%"=="6" goto print_link_qr
 if "%option%"=="7" goto erase_data
 if "%option%"=="8" goto refresh_qr_code
 if "%option%"=="9" goto rewrite_qr_code_link
-if "%option%"=="10" goto exit
+if "%option%"=="10" goto print_files
+if "%option%"=="11" goto exit
 
 :convert
 cls
 echo Convert RON to Euro
 echo ---------------------
-set /p name=Enter the worker's name: 
+set /p name=Enter the worker's name (or type '2' to return to the main menu): 
+if "%name%"=="2" goto menu
 set /p salaryRON=Enter salary in RON: 
 set /a salaryEuro=%salaryRON% / 5
 echo %name%'s salary is %salaryRON% RON, which equals %salaryEuro% Euros (using conversion rate 1 EUR = 5 RON)
@@ -182,8 +190,8 @@ echo Project Link: %qrCodeLink%
 echo.
 echo Generating QR code...
 :: Download the QR code using a free API
-powershell -Command "Invoke-WebRequest 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%qrCodeLink%' -OutFile qr_code.png"
-start qr_code.png
+powershell -Command "Invoke-WebRequest 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%qrCodeLink%' -OutFile %qrCodeImage%"
+start %qrCodeImage%
 echo QR Code generated and displayed.
 
 :: Save current code and link to App Source file
@@ -258,6 +266,41 @@ set /p choice=Choose an option:
 if "%choice%"=="1" goto print_link_qr
 if "%choice%"=="2" goto menu
 
+:print_files
+cls
+echo Print Files
+echo ------------
+echo Printing workers.txt...
+if exist "%workersFile%" (
+    print "%workersFile%"
+    echo workers.txt sent to printer.
+) else (
+    echo No workers.txt file found.
+)
+
+echo Printing App_Source.txt...
+if exist "%appSourceFile%" (
+    print "%appSourceFile%"
+    echo App Source file sent to printer.
+) else (
+    echo No App Source file found.
+)
+
+echo Printing QR Code...
+if exist "%qrCodeImage%" (
+    print "%qrCodeImage%"
+    echo QR Code image sent to printer.
+) else (
+    echo No QR Code image found.
+)
+
+echo.
+echo 1. Continue
+echo 2. Return to Main Menu
+set /p choice=Choose an option: 
+if "%choice%"=="1" goto print_files
+if "%choice%"=="2" goto menu
+
 :exit
 :: Save modifications before exit
 cls
@@ -278,11 +321,4 @@ set "newPath=%scriptPath%"
 echo Files copied successfully to new location if needed.
 
 echo All modifications saved. Exiting...
-exit /b
-
-:: Error logging
-:error
-echo Error occurred at %date% %time% >> "%logFile%"
-echo %errorlevel% >> "%logFile%"
-echo Error details: %1 >> "%logFile%"
 exit /b
